@@ -1,0 +1,12 @@
+APP_TITLE="MyLibrary"
+POSTGRES_USER=postgres
+POSTGRES_PASSWORD=your_password
+DATABASE_DSN=postgresql+asyncpg://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/postgres
+ALEMBIC_DATABASE_DSN=postgresql+asyncpg://${POSTGRES_USER}:${POSTGRES_PASSWORD}@localhost:5432/postgres
+PROJECT_NAME="library"
+PROJECT_HOST="0.0.0.0"
+PROJECT_PORT="8000"
+ECHO_DB=True
+AWS_ACCESS_KEY_ID=your_key_id
+AWS_SECRET_ACCESS_KEY=your_key
+PROJECT_BUCKET=your_bucket
