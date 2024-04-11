@@ -22,7 +22,7 @@ s3 = aioboto3.Session(aws_access_key_id=app_settings.aws_access_key_id,
                       aws_secret_access_key=app_settings.aws_secret_access_key)
 
 
-async def upload_file_to_s3(file_path: str, bucket_name: str, object_name: str):
+async def upload_file_to_s3(file_path: str, bucket_name: str, object_name: str, s3: aioboto3.Session = s3):
     try:
         async with s3.client('s3', endpoint_url='https://storage.yandexcloud.net') as s3_client:
             await s3_client.upload_file(Filename=file_path, Bucket=bucket_name, Key=object_name)
@@ -31,7 +31,7 @@ async def upload_file_to_s3(file_path: str, bucket_name: str, object_name: str):
         raise HTTPException(status_code=500, detail=f'Произошла ошибка при загрузке файла в S3: {e}')
 
 
-async def download_file_from_s3(bucket_name: str, object_name: str):
+async def download_file_from_s3(bucket_name: str, object_name: str, s3: aioboto3.Session = s3):
     try:
         async with s3.client('s3', endpoint_url='https://storage.yandexcloud.net') as s3_client:
             async with aiofiles.tempfile.NamedTemporaryFile(delete=False) as temp_file:
@@ -49,16 +49,16 @@ async def upload_file(
         current_user: str = Depends(PasswordManager.get_current_user),
         db: AsyncSession = Depends(get_session)
 ):
-    filepath = Path(path) / file.filename if str(path).endswith('/') else Path(path)
-    temp_path = f"/tmp/{file.filename}"
-    async with aiofiles.tempfile.NamedTemporaryFile() as buffer:
+    filepath = f'{path}/{file.filename}' if str(path).endswith('/') else path
+    async with aiofiles.tempfile.NamedTemporaryFile(delete=False) as buffer:
         await buffer.write(await file.read())
+        temp_path = buffer.name
     file_create = FileCreate(size=Path(temp_path).stat().st_size,
                              username=current_user,
                              name=file.filename,
                              created_at=str(datetime.now()),
-                             path=str(filepath))
-    await upload_file_to_s3(temp_path, app_settings.project_bucket, str(filepath))
+                             path=filepath)
+    await upload_file_to_s3(temp_path, app_settings.project_bucket, filepath)
     await file_crud.create(db, obj_in=file_create)
     return file_create
 
