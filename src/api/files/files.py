@@ -17,7 +17,6 @@ from services.password_manager import PasswordManager
 
 router = APIRouter()
 
-
 s3 = aioboto3.Session(aws_access_key_id=app_settings.aws_access_key_id,
                       aws_secret_access_key=app_settings.aws_secret_access_key)
 
@@ -65,16 +64,16 @@ async def upload_file(
 
 @router.get("/", response_model=List[FileResponseEntity])
 async def file_info(current_user: str = Depends(PasswordManager.get_current_user),
-                      db: AsyncSession = Depends(get_session)):
+                    db: AsyncSession = Depends(get_session)):
     return await file_crud.get_multi(db, username=current_user)
 
 
 @router.get("/download/")
 async def download_file(
-    path: Optional[str] = None,
-    file_id: Optional[str] = None,
-    db: AsyncSession = Depends(get_session),
-    current_user: str = Depends(PasswordManager.get_current_user)
+        path: Optional[str] = None,
+        file_id: Optional[str] = None,
+        db: AsyncSession = Depends(get_session),
+        current_user: str = Depends(PasswordManager.get_current_user)
 ):
     if path:
         file = await download_file_from_s3(app_settings.project_bucket, path)

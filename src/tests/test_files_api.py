@@ -26,7 +26,7 @@ async def test_upload_file():
     file = UploadFile(filename=file_name, file=BytesIO(file_content))
 
     with patch("api.files.files.Path") as pathlib_mock, \
-            patch("asyncio.open") as open_mock, \
+            patch("asyncio.open"), \
             patch("aiofiles.tempfile.NamedTemporaryFile") as tempfile_mock, \
             patch("api.files.files.upload_file_to_s3") as upload_to_s3_mock, \
             patch("services.file.file_crud.create") as file_create_mock:
