@@ -51,8 +51,8 @@ async def upload_file(
 ):
     filepath = Path(path) / file.filename if str(path).endswith('/') else Path(path)
     temp_path = f"/tmp/{file.filename}"
-    with open(temp_path, "wb") as buffer:
-        buffer.write(await file.read())
+    async with aiofiles.tempfile.NamedTemporaryFile() as buffer:
+        await buffer.write(await file.read())
     file_create = FileCreate(size=Path(temp_path).stat().st_size,
                              username=current_user,
                              name=file.filename,
