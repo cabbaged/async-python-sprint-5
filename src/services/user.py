@@ -1,10 +1,10 @@
 from models.user import User as UserModel
-from schemas.user_schema import User, UserCreate
+from schemas.user_schema import UserCreate
 
 from .base import RepositoryDB
 
 
-class RepositoryUser(RepositoryDB[User, UserCreate, UserCreate]):
+class RepositoryUser(RepositoryDB[UserModel, UserCreate, UserCreate]):
     pass
 
 

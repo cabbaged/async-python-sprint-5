@@ -8,3 +8,6 @@ stop:
 
 migration:
 	cd src && alembic upgrade head
+
+test:
+	cd src && pytest
