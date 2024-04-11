@@ -5,7 +5,7 @@ from fastapi.testclient import TestClient
 
 from main import app
 from models.user import User as UserModel
-from schemas.user_schema import User, UserCreate
+from schemas.user_schema import UserCreate
 from services.password_manager import PasswordManager
 
 test_client = TestClient(app)

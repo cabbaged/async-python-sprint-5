@@ -1,7 +1,5 @@
 from fastapi import FastAPI
 
-from .middleware import BlacklistMiddleware
-
 middlewares = []
 
 
